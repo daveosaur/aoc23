@@ -52,7 +52,6 @@ func part1(inp string) int {
 		result += val
 	}
 
-	// now add them
 	return result
 }
 
