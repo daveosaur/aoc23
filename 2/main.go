@@ -23,15 +23,20 @@ func check(err error) {
 }
 
 func main() {
-	testinput, err := os.ReadFile("testinput.txt")
-	check(err)
-	input, err := os.ReadFile("input.txt")
-	check(err)
+	var input []byte
+	var err error
+	//pass any argument to run test input. because i am lazy
+	switch len(os.Args) {
+	case 1:
+		input, err = os.ReadFile("input.txt")
+		check(err)
+	case 2:
+		input, err = os.ReadFile("testinput.txt")
 
-	fmt.Println(part1(string(testinput)))
+	}
+
 	fmt.Println(part1(string(input)))
 
-	fmt.Println(part2(string(testinput)))
 	fmt.Println(part2(string(input)))
 
 }
@@ -72,13 +77,14 @@ func part2(inp string) int {
 		start := strings.Index(line, ":")
 		split := strings.Split(line[start+1:], ";")
 		for _, s := range split {
-			var a, b, c string
-			var x, y, z int
+			var cube1, cube2, cube3 string
+			var cube1Val, cube2Val, cube3Val int
 			reader := strings.NewReader(s)
-			fmt.Fscanf(reader, " %d %s %d %s %d %s", &x, &a, &y, &b, &z, &c)
-			maxC.parse(a, x)
-			maxC.parse(b, y)
-			maxC.parse(c, z)
+			fmt.Fscanf(reader, " %d %s %d %s %d %s",
+				&cube1Val, &cube1, &cube2Val, &cube2, &cube3Val, &cube3)
+			maxC.parse(cube1, cube1Val)
+			maxC.parse(cube2, cube2Val)
+			maxC.parse(cube3, cube3Val)
 		}
 		result += maxC.red * maxC.green * maxC.blue
 
