@@ -11,6 +11,16 @@ type bounds struct {
 	startx, starty, endx, endy int
 }
 
+type gear struct {
+	val   int
+	count int
+}
+
+var (
+	gearMap        map[[2]int]*gear
+	totalGearCount = 0
+)
+
 func check(err error) {
 	if err != nil {
 		panic(err)
@@ -29,9 +39,14 @@ func main() {
 	}
 	check(err)
 
+	gearMap = make(map[[2]int]*gear)
+
+	// fmt.Println(part1(string(input)))
 	fmt.Println(part1(string(input)))
+	fmt.Println(totalGearCount)
 }
 
+// this is also part 2. hackjob af
 func part1(inp string) int {
 	result := 0
 	numEnded, inNumber := false, false
@@ -57,9 +72,12 @@ func part1(inp string) int {
 					startx: j - buff.Len() - 1,
 					starty: i - 1,
 				}
-				if checkForPart(input, b) {
-					num, err := strconv.Atoi(buff.String())
-					check(err)
+				if buff.String() == "" {
+					continue
+				}
+				num, err := strconv.Atoi(buff.String())
+				check(err)
+				if checkForPart(input, b, num) {
 					result += num
 				}
 				buff.Reset()
@@ -69,8 +87,7 @@ func part1(inp string) int {
 	return result
 }
 
-func checkForPart(input []string, b bounds) bool {
-	//fix bad bounds
+func (b *bounds) fix(input []string) {
 	if b.startx < 0 {
 		b.startx = 0
 	}
@@ -84,12 +101,30 @@ func checkForPart(input []string, b bounds) bool {
 		b.endy = len(input) - 2
 	}
 
+}
+
+func checkForPart(input []string, b bounds, num int) bool {
+	//fix bad bounds
+	b.fix(input)
+	result := false
+
 	for i := b.starty; i <= b.endy; i++ {
 		for j := b.startx; j <= b.endx; j++ {
+			if input[i][j] == '*' {
+				g, ok := gearMap[[2]int{i, j}]
+				if !ok {
+					gearMap[[2]int{i, j}] = &gear{
+						val:   num,
+						count: 1,
+					}
+				} else {
+					totalGearCount += g.val * num
+				}
+			}
 			if (input[i][j] < '0' || input[i][j] > '9') && input[i][j] != '.' {
-				return true
+				result = true
 			}
 		}
 	}
-	return false
+	return result
 }
