@@ -62,37 +62,27 @@ func part1(inp string) int {
 }
 
 func part2(inp string) int {
-	//make a map to store cards so they dont have to be parsed a billion times
-	cards := make(map[string][][]int, 200)
 	result := 0
 	input := strings.Split(inp, "\n")
 	cardCount := make([]int, len(input)+1)
 	for index, line := range input {
-		for i := 0; i <= cardCount[index]; i++ {
-			if len(line) < 1 {
-				break
-			}
-			points := 0
+		if len(line) < 1 {
+			break
+		}
+		start := strings.Index(line, ":") + 1
+		data := strings.Split(line[start:], "|")
+		winning := parseCard(data[0])
+		nums := parseCard(data[1])
 
-			var winning, nums []int
-			savedResults, ok := cards[line]
-			if !ok {
-				start := strings.Index(line, ":") + 1
-				data := strings.Split(line[start:], "|")
-				winning = parseCard(data[0])
-				nums = parseCard(data[1])
-				cards[line] = [][]int{winning, nums}
-			} else {
-				winning, nums = savedResults[0], savedResults[1]
-			}
-
-			for _, num := range nums {
-				for _, win := range winning {
-					if num == win {
-						points += 1
-					}
+		points := 0
+		for _, num := range nums {
+			for _, win := range winning {
+				if num == win {
+					points += 1
 				}
 			}
+		}
+		for i := 0; i <= cardCount[index]; i++ {
 			// append the results to each subsequent cardcount
 			for j := index + 1; j < index+1+points; j++ {
 				cardCount[j] += 1
