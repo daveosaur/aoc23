@@ -38,14 +38,15 @@ func loadInput(path string) ([]int, *conversions) {
 	if err != nil {
 		panic(err)
 	}
-	lines := strings.Split(string(data), "\n")
 
+	lines := strings.Split(string(data), "\n")
 	section := 0
 	for _, line := range lines {
 		if line == "" {
 			section += 1
 			continue
 		}
+		// skip lines without useful data
 		if strings.Contains(line, "-") {
 			continue
 		}
@@ -54,16 +55,15 @@ func loadInput(path string) ([]int, *conversions) {
 			start = strings.Index(line, ":") + 2
 		}
 		split := strings.Split(line[start:], " ")
-		//load seed values on first section
-		if section == 0 {
+
+		switch section {
+		case 0:
+			// load seed values
 			for _, str := range split {
 				num, _ := strconv.Atoi(str)
 				seeds = append(seeds, num)
 			}
-			continue
-		}
-		//load conversion table for the rest
-		switch section {
+		// load conversion tables
 		case 1:
 			conv.toSoil = append(conv.toSoil, splitItems(split))
 		case 2:
@@ -108,20 +108,23 @@ func convertItem(inp int, conv [][3]int) int {
 }
 
 func main() {
-	data, conversions := loadInput("testinput.txt")
+	data, conversions := loadInput("input.txt")
 
-	// part 1
-	minResult := math.MaxInt
-	for _, seed := range data {
-		minResult = min(convertChain(seed, *conversions), minResult)
-	}
-	fmt.Println("part 1: ", minResult)
+	fmt.Println(part1(data, conversions))
 
-	// part 2
 	part2(data, conversions)
 }
 
-// lmao this took 15 minutes and didnt even finish.
+func part1(seeds []int, conv *conversions) int {
+	minResult := math.MaxInt
+	for _, seed := range seeds {
+		minResult = min(convertChain(seed, *conv), minResult)
+	}
+
+	return minResult
+}
+
+// lmao this took 15 minutes (on a pi4b) and didnt even finish.
 // one of the results was small so i tried that one :)
 func part2(seeds []int, conv *conversions) {
 	if len(seeds)%2 != 0 {
@@ -139,7 +142,6 @@ func part2(seeds []int, conv *conversions) {
 			}
 			fmt.Println(minSeed)
 			wg.Done()
-
 		}(i)
 	}
 	wg.Wait()
