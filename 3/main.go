@@ -39,6 +39,7 @@ func main() {
 	}
 	check(err)
 
+	//lazy global map to shove it into part1 solution
 	gearMap = make(map[[2]int]*gear)
 
 	// fmt.Println(part1(string(input)))

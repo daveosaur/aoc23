@@ -25,7 +25,7 @@ func main() {
 	}
 	check(err)
 
-	// fmt.Println(part1(string(input)))
+	fmt.Println(part1(string(input)))
 	fmt.Println(part2(string(input)))
 
 }
@@ -74,6 +74,7 @@ func part2(inp string) int {
 		winning := parseCard(data[0])
 		nums := parseCard(data[1])
 
+		// one point per match, instead of 1 and then doubling
 		points := 0
 		for _, num := range nums {
 			for _, win := range winning {
@@ -82,8 +83,8 @@ func part2(inp string) int {
 				}
 			}
 		}
+		// append the results to each subsequent cardcount
 		for i := 0; i <= cardCount[index]; i++ {
-			// append the results to each subsequent cardcount
 			for j := index + 1; j < index+1+points; j++ {
 				cardCount[j] += 1
 			}
@@ -97,7 +98,7 @@ func part2(inp string) int {
 // parses numbers into the nums slice
 func parseCard(inp string) []int {
 	var buff strings.Builder
-	var nums []int
+	nums := make([]int, 0, 20)
 	for _, c := range inp {
 		switch c {
 		case ' ':
