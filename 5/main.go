@@ -109,6 +109,14 @@ func convertItem(inp int, conv [][3]int) int {
 
 func main() {
 	data, conversions := loadInput("input.txt")
+	fmt.Println(data)
+	count := 0
+	for i := 0; i < len(data); i++ {
+		if i%2 == 1 {
+			count += data[i]
+		}
+	}
+	fmt.Println(count)
 
 	fmt.Println(part1(data, conversions))
 
