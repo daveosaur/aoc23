@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"slices"
 	"strconv"
 	"strings"
 )
@@ -17,10 +18,10 @@ func main() {
 func solve(inp string, part int) int {
 	result := 0
 	lines := strings.Split(inp, "\n")
-	var histories [][]int
+	histories := make([][]int, 0, 32)
 
 	for _, line := range lines {
-		if line == "" {
+		if len(line) < 1 {
 			break
 		}
 		history := parseLine(line)
@@ -38,11 +39,12 @@ func solve(inp string, part int) int {
 }
 
 func processHistory(inp []int) int {
-	subHistories := [][]int{inp}
+	subHistories := make([][]int, 0, 12)
+	subHistories = append(subHistories, inp)
 	for {
 		allZero := true
 		sub := subHistories[len(subHistories)-1]
-		newSub := []int{}
+		newSub := make([]int, 0, 8)
 		for i := 1; i < len(sub); i++ {
 			num := sub[i] - sub[i-1]
 			newSub = append(newSub, num)
@@ -65,35 +67,35 @@ func processHistory(inp []int) int {
 }
 
 func parseLine(inp string) []int {
-	nums := []int{}
-	var buff strings.Builder
+	nums := make([]int, 0, 16)
 
+	// split := strings.Split(inp, " ")
+	// for _, s := range split {
+	// 	num, _ := strconv.Atoi(s)
+	// 	nums = append(nums, num)
+	// }
+	last := 0
 	for i, c := range inp {
 		switch {
-		case i == len(inp)-1:
-			buff.WriteRune(c)
-			fallthrough
 		case c == ' ':
-			num, err := strconv.Atoi(buff.String())
-			if err != nil {
-				panic(err)
-			}
+			num, _ := strconv.Atoi(inp[last:i])
 			nums = append(nums, num)
-			buff.Reset()
-		default:
-			buff.WriteRune(c)
+			last = i + 1
 		}
 	}
+	num, _ := strconv.Atoi(inp[last:])
+	nums = append(nums, num)
 
 	return nums
 }
 
 func processHistoryP2(inp []int) int {
-	subHistories := [][]int{inp}
+	subHistories := make([][]int, 0, 12)
+	subHistories = append(subHistories, inp)
 	for {
 		allZero := true
 		sub := subHistories[len(subHistories)-1]
-		newSub := []int{}
+		newSub := make([]int, 0, 8)
 		for i := 1; i < len(sub); i++ {
 			num := sub[i] - sub[i-1]
 			newSub = append(newSub, num)
@@ -110,7 +112,8 @@ func processHistoryP2(inp []int) int {
 		sub := subHistories[i]
 		prevSub := subHistories[i-1]
 		newStart := prevSub[0] - sub[0]
-		subHistories[i-1] = append([]int{newStart}, subHistories[i-1]...)
+		// subHistories[i-1] = append([]int{newStart}, subHistories[i-1]...)
+		subHistories[i-1] = slices.Insert(subHistories[i-1], 0, newStart)
 	}
 	return subHistories[0][0]
 }

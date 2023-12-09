@@ -63,7 +63,7 @@ func part2(inp [2]int) int {
 	var wg sync.WaitGroup
 	results := make(chan int, 5)
 
-	for threads := 0; threads < 4; threads++ {
+	for threadNum := 0; threadNum < 4; threadNum++ {
 		wg.Add(1)
 		go func(offset int) {
 			localwins := 0
@@ -81,7 +81,7 @@ func part2(inp [2]int) int {
 			}
 			results <- localwins
 			wg.Done()
-		}(threads)
+		}(threadNum)
 	}
 	wg.Wait()
 	close(results)

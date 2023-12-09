@@ -30,7 +30,10 @@ func part1(inp string) int {
 			current = nodes[current][1]
 		}
 		steps++
-		index = (index + 1) % len(directions)
+		index++
+		if index == len(directions) {
+			index = 0
+		}
 
 	}
 
@@ -91,7 +94,10 @@ func findCycles(inp, dir string, nodes map[string][2]string) int {
 			cur = nodes[cur][1]
 		}
 		step++
-		index = (index + 1) % len(dir)
+		index++
+		if index == len(dir) {
+			index = 0
+		}
 		if cur[2] == 'Z' {
 			return step
 		}
