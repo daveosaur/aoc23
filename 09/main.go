@@ -27,12 +27,22 @@ func solve(inp string, part int) int {
 		history := parseLine(line)
 		histories = append(histories, history)
 	}
-	for _, h := range histories {
+	// lineBegin := 0
+	// for i := 0; i < len(inp); i++ {
+	// 	switch {
+	// 	case inp[i] == '\n':
+	// 		history := parseLine(inp[lineBegin:i])
+	// 		histories = append(histories, history)
+	// 		lineBegin = i + 1
+	// 	}
+	// }
+
+	for _, history := range histories {
 		switch part {
 		case 1:
-			result += processHistory(h)
+			result += processHistory(history)
 		case 2:
-			result += processHistoryP2(h)
+			result += processHistoryP2(history)
 		}
 	}
 	return result
@@ -112,7 +122,6 @@ func processHistoryP2(inp []int) int {
 		sub := subHistories[i]
 		prevSub := subHistories[i-1]
 		newStart := prevSub[0] - sub[0]
-		// subHistories[i-1] = append([]int{newStart}, subHistories[i-1]...)
 		subHistories[i-1] = slices.Insert(subHistories[i-1], 0, newStart)
 	}
 	return subHistories[0][0]

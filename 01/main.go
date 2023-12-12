@@ -14,15 +14,15 @@ func check(err error) {
 }
 
 func main() {
-	testinput, err := os.ReadFile("testinput.txt")
-	check(err)
+	// testinput, err := os.ReadFile("testinput.txt")
+	// check(err)
 	inp, err := os.ReadFile("input.txt")
 	check(err)
 
-	result := part1(string(testinput))
-	fmt.Println(result)
+	// result := part1(string(testinput))
+	// fmt.Println(result)
 
-	result = part1(string(inp))
+	result := part1(string(inp))
 	fmt.Println(result)
 
 	result = part2(string(inp))
